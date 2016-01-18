@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="Ajax.js"></script>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<style>
+	img {
+	width:300px;
+	height:200px;
+	
+	}
+
+</style>
+</head>
+<body>
+<div id="container">
+
+</div>
+
+</body>
+<script>
+Ajax.makeRequest("POST","index1.php",{},true,function explain(xhr){
+	var container = document.getElementById("container");
+	var list = document.createElement("ol");
+	var values = JSON.parse(xhr.responseText);
+	for(var i =0 ; i < values.length;i++){
+		var elem = document.createElement("li");
+		
+		
+		var image = document.createElement("img");
+		var imgAtr = document.createAttribute("src");
+		imgAtr.value = values[i].image ;
+		image.setAttributeNode(imgAtr);
+		
+		
+		var link = document.createElement("a");
+		var linkAtr = document.createAttribute("onclick");
+		linkAtr.value = "helper(this.innerHTML);";//function with Ajax
+		link.setAttributeNode(linkAtr);
+		link.innerHTML =values[i].name;
+		
+		
+		elem.appendChild(link);
+		elem.appendChild(image);
+		list.appendChild(elem);
+	}
+	container.appendChild(list);
+});
+
+ function helper(value){
+	 Ajax.makeRequest("POST","index1.php",{},true,function explain(xhr){
+		 var values = JSON.parse(xhr.responseText);
+		 
+/* 		 var showAtr = document.createAttribute("id");
+		 showAtr.value = "show";
+		 show.setAttributeNode(showAtr); */
+		 var elemList = document.getElementsByTagName("li");
+		 for(var i = 0 ; i< values.length;i++){
+			 if(value == values[i].name){
+				 var show = document.createElement("div");
+				 show.innerHTML = values[i].position + "</br>" + values[i].date + "</br>" + values[i].sex ; 
+				 sessionStorage.setItem("name", values[i].name);
+				 sessionStorage.setItem("image",values[i].image);
+				 sessionStorage.setItem("position", values[i].position);
+				 sessionStorage.setItem("date", values[i].date);
+				 sessionStorage.setItem("sex", values[i].sex);
+				 
+				 elemList[i].appendChild(show);
+				 
+				 
+				 }
+				 
+			 }
+		 
+	 });
+ }
+ 
+
+</script>
+</html>
